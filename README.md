@@ -22,23 +22,29 @@ This pattern is useful across industries where chat-based or context-aware inter
   
 ## Installing the plugin
 There are two things necessary to make a custom plugin work in Kong:
-1. Load the plugin files.
+1. Install it locally (based on the .rockspec in the current directory): 
+```
+ sudo luarocks make
+```
+2. Pack the installed rock: 
+```
+luarocks pack YOUR-PLUGIN-NAME PLUGIN-VERSION
+```
+3. Load the plugin files.
 The easiest way to install the plugin is using `luarocks`.
-
-```sh
-luarocks install https://github.com/QuadCorps/kong-plugin-jira-ai-sentiment-wiretap/raw/main/rocks/kong-plugin-jira-ai-sentiment-wiretap-0.1.0-1.all.rock
+```
+luarocks install https://github.com/manisaurabh24/plugin_rockfile/kongversation-plugin-1.0-1.all.rock
 ```
 
 You can substitute `0.1.0-1` in the command above with any other version you want to install.
 
-If running Kong using the Helm chart, you will need to create a config map with the plugin files and mount it to `/opt/kong/plugins/jira-ai-sentiment-wiretap`. You can read more about this on [Kong's website.](https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/setting-up-custom-plugins/)
 
-2. Specify that you want to use the plugin by modifying the plugins property in the Kong configuration.
+5. Specify that you want to use the plugin by modifying the plugins property in the Kong configuration.
 
 Add the custom plugin’s name to the list of plugins in your Kong configuration:
 
 ```conf
-plugins = bundled, jira-ai-sentiment-wiretap
+plugins = bundled, kongversation-plugin
 ```
 
 If you are using the Kong helm chart, create a configMap with the plugin files and add it to your `values.yaml` file:
@@ -47,13 +53,12 @@ If you are using the Kong helm chart, create a configMap with the plugin files a
 # values.yaml
 plugins:
   configMaps:
-  - name: kong-plugin-jira-ai-sentiment-wiretap
-    pluginName: jira-ai-sentiment-wiretap
+  - name: kongversation-plugin
+    pluginName: kongversation-plugin
 ```
   
 ## Configuring Kong Gateway  
 
-  
 1\. Enable Required Plugins  
   
 This project uses:  
@@ -271,3 +276,10 @@ If you want to clear the conversation for a client (new chat), you can:
 ⸻  
   
 Would you like me to also add a diagram (sequence flow) in the README (using Mermaid or ASCII) to make the request flow crystal clear for hackathon judges?
+
+```
+PAT="update_pat_token_here"
+deck gateway ping --konnect-control-plane-name <control_plane_name> --konnect-token $PAT
+deck gateway sync --konnect-control-plane-name <control_plane_name> --konnect-token $PAT kong_without_custom_plugin.yaml
+deck gateway sync --konnect-control-plane-name tcsai --konnect-token $PAT kong.yaml
+```
