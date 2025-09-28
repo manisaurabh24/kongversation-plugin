@@ -1,6 +1,6 @@
-#🧠 Stateless LLMs with Smart Contextual Memory using Kong Gateway  
+# Stateless LLMs with Smart Contextual Memory using Kong Gateway  
   
-##📌 Overview  
+## Overview  
   
 Large Language Models (LLMs) are stateless by design — they don’t remember past interactions unless you send the full conversation every time. This creates overhead for developers and clients.  
   
@@ -12,8 +12,7 @@ This project demonstrates how to use Kong Gateway with kongversation-plugin to p
   
   
   
-##🌍 Industry Use Cases  
-  
+## Industry Use Cases   
 This pattern is useful across industries where chat-based or context-aware interactions are needed:  
 • Customer Support 🛠️ – Context-aware bots that remember past questions.  
 • Banking & Finance 💳 – Secure, per-customer conversational AI (history tied to consumer-key or token).  
@@ -21,8 +20,39 @@ This pattern is useful across industries where chat-based or context-aware inter
 • E-commerce 🛒 – Personalized shopping assistants that remember preferences.  
 • Enterprise Apps 🏢 – AI copilots that assist employees across multiple requests without duplicating input.  
   
+## Installing the plugin
+There are two things necessary to make a custom plugin work in Kong:
+1. Load the plugin files.
+The easiest way to install the plugin is using `luarocks`.
+
+```sh
+luarocks install https://github.com/QuadCorps/kong-plugin-jira-ai-sentiment-wiretap/raw/main/rocks/kong-plugin-jira-ai-sentiment-wiretap-0.1.0-1.all.rock
+```
+
+You can substitute `0.1.0-1` in the command above with any other version you want to install.
+
+If running Kong using the Helm chart, you will need to create a config map with the plugin files and mount it to `/opt/kong/plugins/jira-ai-sentiment-wiretap`. You can read more about this on [Kong's website.](https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/setting-up-custom-plugins/)
+
+2. Specify that you want to use the plugin by modifying the plugins property in the Kong configuration.
+
+Add the custom plugin’s name to the list of plugins in your Kong configuration:
+
+```conf
+plugins = bundled, jira-ai-sentiment-wiretap
+```
+
+If you are using the Kong helm chart, create a configMap with the plugin files and add it to your `values.yaml` file:
+
+```yaml
+# values.yaml
+plugins:
+  configMaps:
+  - name: kong-plugin-jira-ai-sentiment-wiretap
+    pluginName: jira-ai-sentiment-wiretap
+```
   
-##⚙️ Configuring Kong Gateway  
+## Configuring Kong Gateway  
+
   
 1\. Enable Required Plugins  
   
