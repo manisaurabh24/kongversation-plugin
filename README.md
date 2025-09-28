@@ -1,18 +1,14 @@
-Got it ✅ — here’s a structured README.md draft for your repository that explains the idea, industry relevance, setup, and an example flow.  
-  
-⸻  
-  
 🧠 Stateless LLMs with Smart Contextual Memory using Kong Gateway  
   
 📌 Overview  
   
 Large Language Models (LLMs) are stateless by design — they don’t remember past interactions unless you send the full conversation every time. This creates overhead for developers and clients.  
   
-This project demonstrates how to use Kong Gateway with AI Plugins to provide a conversation memory layer.  
-• Stores chat history per client (apikey) in Kong, not the LLM.  
-• Automatically appends past messages before sending to the LLM.  
+This project demonstrates how to use Kong Gateway with kongversation-plugin to provide a conversation memory layer.  
+• Stores chat history per consumer-key or short lived oauth token in Kong, not the LLM.  
+• Automatically appends message history before sending to the LLM.  
 • Keeps the LLM backend stateless and scalable.  
-• Provides a seamless “chat-like” experience for clients.  
+• Provides a seamless “chat-like” experience for consuming applications.  
   
 ⸻  
   
@@ -20,7 +16,7 @@ This project demonstrates how to use Kong Gateway with AI Plugins to provide a c
   
 This pattern is useful across industries where chat-based or context-aware interactions are needed:  
 • Customer Support 🛠️ – Context-aware bots that remember past questions.  
-• Banking & Finance 💳 – Secure, per-customer conversational AI (history tied to API keys).  
+• Banking & Finance 💳 – Secure, per-customer conversational AI (history tied to consumer-key or token).  
 • Healthcare 🏥 – Patient chatbots that recall recent medical interactions while keeping backend stateless.  
 • E-commerce 🛒 – Personalized shopping assistants that remember preferences.  
 • Enterprise Apps 🏢 – AI copilots that assist employees across multiple requests without duplicating input.  
@@ -32,9 +28,9 @@ This pattern is useful across industries where chat-based or context-aware inter
 1\. Enable Required Plugins  
   
 This project uses:  
-• key-auth → authenticate clients using apikey header.  
-• ai-contextualizer → manage and cache conversation history per API key.  
-• ai-proxy → forward the request to the LLM (OpenAI, Anthropic, or other providers).  
+• key-auth → authenticate clients using consumer-key or oauth token in header.  
+• ai-contextualizer → manage and cache conversation history per consumer-key or oauth token in header.  
+• ai-proxy → forward the request to the LLM (Azure , OpenAI, Anthropic, or other providers).  
   
 2\. Example Declarative Config (kong.yaml)  
   
