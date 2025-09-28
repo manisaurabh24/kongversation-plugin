@@ -10,7 +10,9 @@ This project demonstrates how to use Kong Gateway with kongversation-plugin to p
 • Keeps the LLM backend stateless and scalable.  
 • Provides a seamless “chat-like” experience for consuming applications.  
   
-  
+  <p align="center" width="100%">
+    <img src="assets/Kongversation.gif">
+</p>
   
 ## Industry Use Cases   
 This pattern is useful across industries where chat-based or context-aware interactions are needed:  
