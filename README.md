@@ -1,6 +1,6 @@
-🧠 Stateless LLMs with Smart Contextual Memory using Kong Gateway  
+#🧠 Stateless LLMs with Smart Contextual Memory using Kong Gateway  
   
-📌 Overview  
+##📌 Overview  
   
 Large Language Models (LLMs) are stateless by design — they don’t remember past interactions unless you send the full conversation every time. This creates overhead for developers and clients.  
   
@@ -10,9 +10,9 @@ This project demonstrates how to use Kong Gateway with kongversation-plugin to p
 • Keeps the LLM backend stateless and scalable.  
 • Provides a seamless “chat-like” experience for consuming applications.  
   
-⸻  
   
-🌍 Industry Use Cases  
+  
+##🌍 Industry Use Cases  
   
 This pattern is useful across industries where chat-based or context-aware interactions are needed:  
 • Customer Support 🛠️ – Context-aware bots that remember past questions.  
@@ -21,9 +21,8 @@ This pattern is useful across industries where chat-based or context-aware inter
 • E-commerce 🛒 – Personalized shopping assistants that remember preferences.  
 • Enterprise Apps 🏢 – AI copilots that assist employees across multiple requests without duplicating input.  
   
-⸻  
   
-⚙️ Configuring Kong Gateway  
+##⚙️ Configuring Kong Gateway  
   
 1\. Enable Required Plugins  
   
