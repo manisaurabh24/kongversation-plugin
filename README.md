@@ -33,7 +33,7 @@ This project uses:
 • ai-proxy → forward the request to the LLM (Azure , OpenAI, Anthropic, or other providers).  
   
 2\. Example Declarative Config (kong.yaml)  
-  
+```
 \_format\_version: "3.0"  
 \_transform: true  
   
@@ -68,39 +68,39 @@ services:
                header\_name: Authorization  
                header\_value: "Bearer ${LLM\_API\_KEY}"  
   
-  
-⸻  
+```
+
   
 ▶️ Testing the Setup  
   
 Request 1  
-  
+```
 curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
  -H "apikey: xyz123" \\  
  -H "Content-Type: application/json" \\  
  -d '{ "message": "Tell me something about" }'  
-  
+```
 👉 Sent to LLM:  
-  
+```
 { "messages": \["Tell me something about"\] }  
-  
-  
+```
+ 
 ⸻  
   
 Request 2  
-  
+```
 curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
  -H "apikey: xyz123" \\  
  -H "Content-Type: application/json" \\  
  -d '{ "message": "How many employees?" }'  
-  
-👉 Sent to LLM:  
-  
+```
+👉 Sent to LLM: 
+```
 { "messages": \["Tell me something about", "How many employees?"\] }  
   
-  
+```
 ⸻  
-  
+
 Resetting History  
   
 If you want to clear the conversation for a client (new chat), you can:  
@@ -156,7 +156,7 @@ This project uses:
 • ai-proxy → forward the request to the LLM (OpenAI, Anthropic, or other providers).  
   
 2\. Example Declarative Config (kong.yaml)  
-  
+```  
 \_format\_version: "3.0"  
 \_transform: true  
   
@@ -191,36 +191,37 @@ services:
                header\_name: Authorization  
                header\_value: "Bearer ${LLM\_API\_KEY}"  
   
-  
+```
 ⸻  
   
 ▶️ Testing the Setup  
   
 Request 1  
-  
+```
 curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
  -H "apikey: xyz123" \\  
  -H "Content-Type: application/json" \\  
  -d '{ "message": "Tell me something about" }'  
-  
+```
 👉 Sent to LLM:  
-  
+```  
 { "messages": \["Tell me something about"\] }  
-  
+```
   
 ⸻  
-  
+
 Request 2  
   
+``` 
 curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
  -H "apikey: xyz123" \\  
  -H "Content-Type: application/json" \\  
  -d '{ "message": "How many employees?" }'  
-  
+```  
 👉 Sent to LLM:  
-  
+```  
 { "messages": \["Tell me something about", "How many employees?"\] }  
-  
+```  
   
 ⸻  
   
