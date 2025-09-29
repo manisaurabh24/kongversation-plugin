@@ -35,7 +35,7 @@ luarocks pack YOUR-PLUGIN-NAME PLUGIN-VERSION
 3. Load the plugin files.
 The easiest way to install the plugin is using `luarocks`.
 ```
-luarocks install https://github.com/manisaurabh24/kongversation-plugin/kongversation-plugin-1.0-1.all.rock
+luarocks install https://github.com/manisaurabh24/kongversation-plugin/blob/main/kongversation-plugin/kongversation-plugin-1.0-1.all.rock
 ```
 
 You can substitute `0.1.0-1` in the command above with any other version you want to install.
