@@ -35,7 +35,7 @@ luarocks pack YOUR-PLUGIN-NAME PLUGIN-VERSION
 3. Load the plugin files.
 The easiest way to install the plugin is using `luarocks`.
 ```
-luarocks install https://github.com/manisaurabh24/plugin_rockfile/kongversation-plugin-1.0-1.all.rock
+luarocks install https://github.com/manisaurabh24/kongversation-plugin/kongversation-plugin-1.0-1.all.rock
 ```
 
 You can substitute `0.1.0-1` in the command above with any other version you want to install.
@@ -59,7 +59,7 @@ plugins:
     pluginName: kongversation-plugin
 ```
   
-## Configuring Kong Gateway  
+## Configuring Kong Gateway - Without KongVersation Plugin 
 
 1\. Enable Required Plugins  
   
@@ -67,72 +67,148 @@ This project uses:
 • key-auth → authenticate clients using consumer-key or oauth token in header.  
 • ai-contextualizer → manage and cache conversation history per consumer-key or oauth token in header.  
 • ai-proxy → forward the request to the LLM (Azure , OpenAI, Anthropic, or other providers).  
+<p align="center" width="100%">
+    <img src="assets/Kongversation.gif">
+</p>
+  
   
 2\. Example Declarative Config (kong.yaml)  
+change the config based on your llm and target server. Eg:
 ```
-\_format\_version: "3.0"  
-\_transform: true  
+_format_version: "3.0"
+_info:
+  select_tags:
+  - kongversation
+_konnect:
+  control_plane_name: tcsai
+services:
+- name: kongversation-service
+  url: https://httpbin.konghq.com
+  routes:
+  - name: kongversation-route
+    paths:
+    - /kongversation
+    plugins:
+    - name: ai-proxy
+      instance_name: "ai-proxy-kongversation"
+      enabled: true
+      config:
+        balancer:
+          algorithm: round-robin
+          connect_timeout: 60000
+          failover_criteria:
+            - error
+            - timeout
+          hash_on_header: X-Kong-LLM-Request-ID
+          latency_strategy: tpot
+          read_timeout: 60000
+          retries: 5
+          slots: 10000
+          tokens_count_strategy: total-tokens
+          write_timeout: 60000
+        embeddings: null
+        genai_category: text/generation
+        llm_format: openai
+        max_request_body_size: 8192
+        model_name_header: true
+        response_streaming: allow
+        targets:
+          - auth:
+              allow_override: false
+              aws_secret_access_key: null
+              azure_client_id: null
+              azure_client_secret: null
+              azure_tenant_id: null
+              azure_use_managed_identity: false
+              header_name: api-key
+              header_value: '{vault://azure-openai/apikey}'
+              param_location: null
+              param_name: null
+              param_value: null
+            description: null
+            logging:
+              log_payloads: false
+              log_statistics: true
+            model:
+              name: null
+              options:
+                anthropic_version: null
+                azure_api_version: <<replace>>
+                azure_deployment_id: <<replace>>
+                azure_instance: <<replace>>
+              provider: azure
+            route_type: llm/v1/chat
+            weight: 100
+        vectordb: null
+      enabled: true
+      id: 710bc3cc-cca7-472d-ab55-3b1fb1b1dd31
+      name: ai-proxy-advanced
+      protocols:
+        - grpc
+        - grpcs
+        - http
+        - https
+    - name: ai-prompt-decorator
+      instance_name: ai-prompt-decorator-kongversation
+      enabled: true
+      config:
+        prompts:
+          prepend:
+          - role: system
+            content: "You will always respond in the English (India) language."
+    - name: key-auth
+      instance_name: key-auth-kongversation
+      enabled: true
+   
+consumers:
+  - username: kongversation-app-a                              
+    keyauth_credentials:
+      - key: kongversation-app-a-123                      
+  - username: kongversation-app-b                          
+    keyauth_credentials:
+      - key: kongversation-app-b-123               
+ 
   
-services:  
- - name: llm-service  
-   url: [https://your-llm-backend.example.com/v1/chat](https://your-llm-backend.example.com/v1/chat "https://your-llm-backend.example.com/v1/chat")  
-   routes:  
-     - name: chat-route  
-       paths: \[ /chat \]  
-       methods: \[ POST \]  
-       plugins:  
-         - name: key-auth  
-           config:  
-             key\_names: \[apikey\]  
-             hide\_credentials: true  
-  
-         - name: ai-contextualizer  
-           config:  
-             strategy: memory  
-             ttl: 3600             # 1 hour history  
-             key: apikey  
-             input\_key: message  
-             output\_key: messages  
-  
-         - name: ai-proxy  
-           config:  
-             route\_type: chat  
-             model:  
-               provider: openai     # change provider if needed  
-               name: gpt-4o-mini  
-             auth:  
-               header\_name: Authorization  
-               header\_value: "Bearer ${LLM\_API\_KEY}"  
   
 ```
 
   
-▶️ Testing the Setup  
+▶️ Testing the Setup  - - Without KongVersation Plgin 
   
 Request 1  
 ```
-curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
- -H "apikey: xyz123" \\  
- -H "Content-Type: application/json" \\  
- -d '{ "message": "Tell me something about" }'  
+curl --location 'http://localhost:8000/kongversation' \
+--header 'Content-Type: application/json' \
+--header 'apikey: kongversation-app-a-123' \
+--data '{
+    "model": "gpt-4",
+    "messages": [
+      {"role": "user", "content": "Tell me about TCS?"}
+    ]
+  }'
 ```
 👉 Sent to LLM:  
 ```
-{ "messages": \["Tell me something about"\] }  
+{ "messages": \["Tell me about TCS"\] }  
 ```
  
 ⸻  
   
 Request 2  
 ```
-curl -X POST [http://localhost:8000/chat](http://localhost:8000/chat "http://localhost:8000/chat") \\  
- -H "apikey: xyz123" \\  
- -H "Content-Type: application/json" \\  
- -d '{ "message": "How many employees?" }'  
+curl --location 'http://localhost:8000/kongversation' \
+--header 'Content-Type: application/json' \
+--header 'apikey: kongversation-app-a-123' \
+--data '{
+    "model": "gpt-4",
+    "messages": [
+      {"role": "user", "content": "How many employees ?"}
+    ]
+  }' 
 ```
 👉 Sent to LLM: 
 ```
-{ "messages": \["Tell me something about", "How many employees?"\] }  
+{ "messages": \["Tell me about TCS", "How many employees?"\] }  
   
 ```
 ⸻  
