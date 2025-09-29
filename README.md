@@ -216,7 +216,7 @@ curl --location 'http://localhost:8000/kongversation' \
 👉 Summary:
 LLM doesn't understand the query.
 <p align="center" width="100%">
-    <img src="assets/without-kongversation-plugin.png">
+    <img src="assets/llm_does-not-understand.png">
 </p>
 
 ## Configuring Kong Gateway -  KongVersation Plugin 
@@ -389,9 +389,9 @@ curl --location 'http://localhost:8000/kongversation' \
   
 ```
 Summary:
-LLM doesn't understand the query.
+LLM  understand the query non.
 <p align="center" width="100%">
-    <img src="assets/without-kongversation-plugin.png">
+    <img src="assets/llm_does-understand.png">
 </p>
 
 ⸻  
